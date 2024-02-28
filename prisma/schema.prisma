@@ -10,18 +10,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Character {
+model Card {
   id       Int      @id @default(autoincrement())
   name     String
   slug     String   @unique
-  eyes     String
-  hairs    String
-  birthday DateTime
-  blood    String
-  wand     String
-  patronus String
-  role     String
-  house    String
-  actor    String
+  tags     String
   image    String
 }
