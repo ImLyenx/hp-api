@@ -1,8 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "rhel-openssl-1.0.x"]
 }
 
@@ -12,9 +9,10 @@ datasource db {
 }
 
 model Card {
-  id       Int      @id @default(autoincrement())
-  name     String
-  slug     String   @unique
-  tags     String
-  image    String
+  id    Int     @id @default(autoincrement())
+  name  String
+  slug  String  @unique
+  tags  String
+  house String? @db.VarChar(32)
+  image String
 }
