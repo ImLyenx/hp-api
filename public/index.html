@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="global.css" />
+    <script
+      defer
+      src="https://kit.fontawesome.com/aa06e5f929.js"
+      crossorigin="anonymous"
+    ></script>
+    <meta name="description" content="Harry Potter Trading Card Game" />
+    <link
+      rel="shortcut icon"
+      href="assets/images/logo.png"
+      type="image/x-icon"
+    />
+    <title>Harry Potter TCG</title>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <img src="assets/images/logo.png" alt="" />
+      </div>
+      <nav>
+        <ul class="navbar-list">
+          <li>
+            <a href="/">
+              <i class="fas fa-house"></i>
+              <span class="nav-link">Home</span></a
+            >
+          </li>
+          <li>
+            <a href="/rules"
+              ><i class="fas fa-clipboard-check"></i
+              ><span class="nav-link">Rules</span></a
+            >
+          </li>
+          <li>
+            <a href="/cards"
+              ><i class="fas fa-sheet-plastic"></i
+              ><span class="nav-link">Cards</span></a
+            >
+          </li>
+        </ul>
+      </nav>
+      </div>
+      <input type="checkbox" id="burger-toggle" />
+      <label for="burger-toggle" class="burger-icon">
+        <i class="fas fa-bars"></i>
+      </label>
+      <div class="burger-menu">
+        <ul class="burger-menu-list">
+          <li>
+            <a href="/">
+              <i class="fas fa-house"></i>
+              <span>Home</span>
+            </a>
+          </li>
+          <li>
+            <a href="/rules">
+              <i class="fas fa-clipboard-check"></i>
+              <span>Rules</span>
+            </a>
+          </li>
+          <li>
+            <a href="/cards">
+              <i class="fas fa-sheet-plastic"></i>
+              <span>Cards</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <script defer>
+        const burgerToggle = document.getElementById("burger-toggle");
+        const burgerMenu = document.querySelector(".burger-menu");
+        burgerToggle.addEventListener("change", () => {
+          if (burgerToggle.checked) {
+            burgerMenu.style.transform = "scaleY(1)";
+          } else {
+            burgerMenu.style.transform = "scaleY(0)";
+          }
+        });
+      </script>
+    </header>
+    <main>
+      <section class="hero-image">
+        <img src="../assets/images/hp-wallpaper.jpg" alt="" />
+        <h1 class="hero-title">Welcome to Hogwarts</h1>
+      </section>
+      <section id="gallery" class="gallery">
+        <img
+          src="https://boutique-magic-effect.com/wp-content/uploads/2021/11/Harry-Potter-Jeux-de-cartes-par-Theory11-rouge.jpg"
+          alt=""
+        />
+        <img
+          class="inactive"
+          src="https://images1.vinted.net/t/02_019ed_b9Jb2w7Ss9PqEDMA8cyiezp7/f800/1689406357.jpeg?s=f03c1851c3f5d5349cbd1353c94cf8874bba029b"
+          alt=""
+        />
+        <img
+          class="inactive"
+          src="https://i.redd.it/a0d7mf8ydha31.jpg"
+          alt=""
+        />
+        <img
+          class="inactive"
+          src="https://m.media-amazon.com/images/I/A19OSh+TQeL.jpg"
+          alt=""
+        />
+        <img
+          class="inactive"
+          src="https://www.gazette-du-sorcier.com/wp-content/uploads/2022/07/20210214_1422151-1024x768.jpg"
+          alt=""
+        />
+        <img
+          class="inactive"
+          src="https://tools.toywiz.com/_images/_webp/_products/lg/hapocagabset.webp"
+          alt=""
+        />
+      </section>
+      <script async type="module">
+        const gallery = document.getElementById("gallery");
+        let image = 1;
+
+        function rotate() {
+          window.marginvalue = window.innerWidth < 1024 ? 25 : 35;
+          window.offsetvalue = window.innerWidth < 1024 ? -70 : -50;
+          if (image != 6) {
+            [...gallery.children].forEach((img) => {
+              img.classList.add("inactive");
+            });
+            gallery.children[image].classList.remove("inactive");
+            gallery.style.marginLeft = `${
+              image * window.offsetvalue + window.marginvalue
+            }vw`;
+            image++;
+          } else {
+            gallery.children[0].classList.remove("inactive");
+            gallery.style.marginLeft = `${window.marginvalue}vw`;
+            image = 1;
+          }
+        }
+
+        setInterval(rotate, 3000);
+      </script>
+      <section class="main-content">
+        <div class="about">
+          <h2>About</h2>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Adipisci
+            reiciendis molestias ab nam corporis quaerat consectetur minus. Enim
+            sequi saepe harum repellendus cum voluptate porro culpa dolore
+            aliquam magnam quam velit, explicabo accusamus officia consequuntur
+            iusto dignissimos eius deleniti nostrum expedita ratione architecto
+            quae natus! Minus ipsa officiis repudiandae inventore omnis?
+            Explicabo labore, nihil deleniti incidunt amet magnam omnis adipisci
+            ex nesciunt natus atque iure ab dolorem veniam officiis id fugiat
+            cum voluptatem qui. Recusandae quo esse consectetur, iure sunt
+            voluptates consequatur fugit quia cumque deleniti, voluptatibus
+            obcaecati pariatur. Assumenda quam optio libero minus excepturi,
+            consequuntur voluptates, atque dolore adipisci eligendi culpa itaque
+            unde eaque, quod placeat recusandae. Eveniet neque eaque laboriosam
+            illo ea pariatur quas alias sed architecto commodi.
+          </p>
+        </div>
+        <div class="contact">
+          <h2>Contact</h2>
+          <form>
+            <label for="name">Name</label>
+            <input type="text" id="name" placeholder="Your name" />
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Your email" />
+            <label for="message">Message</label>
+            <textarea
+              name="message"
+              id="message"
+              cols="30"
+              rows="10"
+              placeholder="Your message"
+            ></textarea>
+            <button type="submit">Send</button>
+          </form>
+        </div>
+        <div class="news">
+          <h2>News</h2>
+          <div class="articles-container">
+            <article>
+              <h3>Titre</h3>
+              <p>
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                Facilis, iure.
+              </p>
+            </article>
+            <article>
+              <h3>Titre</h3>
+              <p>
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                Facilis, iure.
+              </p>
+            </article>
+            <article>
+              <h3>Titre</h3>
+              <p>
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                Facilis, iure.
+              </p>
+            </article>
+            <article>
+              <h3>Titre</h3>
+              <p>
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                Facilis, iure.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <div class="socials">
+        <a href="#"><i class="fab fa-youtube"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+      </div>
+      <div class="legal">
+        <a href="#">Terms of Use</a>
+        <p>&middot;</p>
+        <a href="#">Privacy Policy</a>
+      </div>
+      <div class="copyright">
+        <p>&copy; Eric Hubert, <span id="copy-date"></span></p>
+      </div>
+      <script async type="module">
+        document.getElementById("copy-date").innerText =
+          new Date().getFullYear();
+      </script>
+    </footer>
+  </body>
+</html>

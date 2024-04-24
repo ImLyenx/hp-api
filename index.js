@@ -1,23 +1,17 @@
-import express from "express";
-import dotenv from "dotenv";
-import router from "./router.js";
-import cards from "./routes/CardRoutes.js";
-import cors from "cors";
-
+const express = require("express");
+const ip = require("ip");
 const app = express();
-dotenv.config();
+const port = 3000;
+require("./config/prisma");
+const cors = require("cors");
 
 app.use(cors());
-app.set("view engine", "ejs");
-app.use(express.static("public"));
-app.use(router);
+app.use(express.json());
 
-router.use("/cards", cards);
+app.use(express.static("public", { extensions: ["html"] }));
 
-app.get("/", (req, res) => {
-  res.render("index", { title: "Home" });
-});
+app.use("/", require("./routes/start"));
 
-app.listen(process.env.PORT, () => {
-  console.log("server running on port " + process.env.PORT);
+app.listen(port, () => {
+  console.log(`Server is running on ${ip.address()}:${port}`);
 });

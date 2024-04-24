@@ -1,6 +1,5 @@
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "rhel-openssl-1.0.x"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -9,10 +8,19 @@ datasource db {
 }
 
 model Card {
-  id    Int     @id @default(autoincrement())
+  id    Int    @id @default(autoincrement())
   name  String
-  slug  String  @unique
-  tags  String
-  house String? @db.VarChar(32)
+  slug  String @unique
+  house String @db.VarChar(32)
   image String
+}
+
+model User {
+  id               Int      @id @default(autoincrement())
+  email            String   @unique
+  name             String
+  lastHouseVisited String
+  password         String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }
