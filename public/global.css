@@ -84,7 +84,8 @@ nav {
   transform: scale(1.1);
 }
 
-.login-form {
+.login-form,
+.register-form {
   display: flex;
   flex-direction: column;
   gap: 1vh;
@@ -104,12 +105,18 @@ nav {
   display: none !important;
 }
 
-.login-form > input {
+.login-form > input,
+.register-form > input {
   padding: 8px;
   border-radius: 8px;
   border: none;
   outline: none;
   font-size: large;
+}
+
+.tip {
+  font-size: medium;
+  margin-top: -8px;
 }
 
 @media screen and (max-width: 800px) {

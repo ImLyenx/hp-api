@@ -2,6 +2,7 @@ const express = require("express");
 const AuthController = require("../controllers/AuthController");
 const UsersController = require("../controllers/UsersController");
 const CardsController = require("../controllers/CardsController");
+const UserCardsController = require("../controllers/UserCardsController");
 
 const { authenticateToken } = require("../middlewares/auth");
 
@@ -38,6 +39,10 @@ router.delete("/api/users/:id", UsersController.delete);
 
 router.get("/api/cards", CardsController.index);
 router.get("/api/cards/:id", CardsController.show);
+router.post("/api/cards", CardsController.showMultiple);
+
+router.get("/api/usercards", authenticateToken, UserCardsController.index);
+router.post("/api/usercards", authenticateToken, UserCardsController.store);
 
 router.get("/api/test", (req, res) => {
   res.json({ house: "" });

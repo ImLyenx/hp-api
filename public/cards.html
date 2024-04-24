@@ -79,18 +79,33 @@
       <div class="logout hidden">
         <i class="fas fa-user-large-slash"></i>
       </div>
-      <form class="login-form hidden" onsubmit="handleLogin(event)"
-        <label for="email">Email adress</label>
-        <input type="email" id="email" />
-        <label for="password">Password</label>
-        <input type="password" id="password" />
-        <button type="submit">Login</button>
-      </form>
+      <div class="forms hidden">
+        <form class="login-form" onsubmit="handleLogin(event)"
+          <label for="login-email">Email adress</label>
+          <input type="email" id="login-email" />
+          <label for="llogin-password">Password</label>
+          <input type="password" id="login-password" />
+          <button type="submit">Login</button>
+
+          <span class="tip">Register</span>
+        </form>
+
+        <form class="register-form hidden" onsubmit="handleRegister(event)">
+          <label for="register-email">Email adress</label>
+          <input type="email" id="register-email" />
+          <label for="name">Username</label>
+          <input type="text" id="name" />
+          <label for="register-password">Password</label>
+          <input type="password" id="register-password" />
+          <button type="submit">Register</button>
+          <span class="tip">Login</span>
+        </form>
+      </div>
       <script>
         const loginButton = document.querySelector(".login");
-        const loginForm = document.querySelector(".login-form");
+        const forms = document.querySelector(".forms");
         loginButton.addEventListener("click", () => {
-          loginForm.classList.toggle("hidden");
+          forms.classList.toggle("hidden");
         });
 
         function loginStatus() {
@@ -106,8 +121,8 @@
 
         function handleLogin(e) {
           e.preventDefault();
-          const email = document.getElementById("email").value;
-          const password = document.getElementById("password").value;
+          const email = document.getElementById("login-email").value;
+          const password = document.getElementById("login-password").value;
           fetch("/api/login", {
             method: "POST",
             headers: {
@@ -118,18 +133,49 @@
             .then((response) => response.json())
             .then((data) => {
               localStorage.setItem("token", data.token);
-              loginForm.classList.add("hidden");
+              forms.classList.add("hidden");
               loginStatus();
             })
             .catch((error) => {
               console.error("There was an error!", error);
             });
           }
+
+          function handleRegister(e) {
+            e.preventDefault();
+            const email = document.getElementById("register-email").value;
+            const name = document.getElementById("name").value;
+            const password = document.getElementById("register-password").value;
+            fetch("/api/users", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ email, name, password }),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                localStorage.setItem("token", data.token);
+                forms.classList.add("hidden");
+                loginStatus();
+              })
+              .catch((error) => {
+                console.error("There was an error!", error);
+              });
+          }
           
           logoutButton = document.querySelector(".logout");
           logoutButton.addEventListener("click", () => {
             localStorage.removeItem("token");
             loginStatus();
+          });
+
+          const tip = document.querySelectorAll(".tip");
+          tip.forEach((element) => {
+            element.addEventListener("click", () => {
+              document.querySelector(".login-form").classList.toggle("hidden");
+              document.querySelector(".register-form").classList.toggle("hidden");
+            });
           });
       </script>
 

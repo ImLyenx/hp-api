@@ -1,5 +1,6 @@
 const PrismaClient = require("../config/prisma");
 const { hashPassword } = require("../utils/bcrypt");
+const { generateAccessToken } = require("../utils/jwt");
 
 class UsersController {
   async index(req, res) {
@@ -26,7 +27,8 @@ class UsersController {
           lastHouseVisited: "",
         },
       });
-      res.json(user);
+      const token = generateAccessToken(user.email);
+      res.json({ token });
     } catch (error) {
       console.error(error);
       res
