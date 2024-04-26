@@ -22,7 +22,7 @@ class AuthController {
         return res.status(401).json({ error: "Invalid password" });
       }
 
-      const token = generateAccessToken(email);
+      const token = generateAccessToken(email, user.id);
 
       return res.json({ token });
     } catch (error) {

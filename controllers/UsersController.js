@@ -27,7 +27,7 @@ class UsersController {
           lastHouseVisited: "",
         },
       });
-      const token = generateAccessToken(user.email);
+      const token = generateAccessToken(user.email, user.id);
       res.json({ token });
     } catch (error) {
       console.error(error);

@@ -8,6 +8,10 @@
   --text-color: #fff;
 }
 
+button {
+  cursor: pointer;
+}
+
 @font-face {
   font-family: harrypotter;
   src: url("../assets/fonts/harrypotter.ttf");
@@ -64,7 +68,7 @@ nav {
 }
 
 .login,
-.logout {
+.user {
   text-decoration: none;
   color: inherit;
   display: flex;
@@ -73,6 +77,7 @@ nav {
   background-color: var(--bg-color);
   color: var(--text-color);
   font-size: x-large;
+  margin-right: 5vw;
   margin-left: 2vw;
   cursor: pointer;
 
@@ -80,12 +85,13 @@ nav {
 }
 
 .login:hover,
-.logout:hover {
+.user:hover {
   transform: scale(1.1);
 }
 
 .login-form,
-.register-form {
+.register-form,
+.user-menu {
   display: flex;
   flex-direction: column;
   gap: 1vh;
@@ -96,9 +102,9 @@ nav {
   border-radius: 15px;
   background-color: #222;
   z-index: 100;
-  cursor: pointer;
   font-size: x-large;
   transition: all 0.3s ease-in-out;
+  pointer-events: all;
 }
 
 .hidden {
@@ -117,6 +123,7 @@ nav {
 .tip {
   font-size: medium;
   margin-top: -8px;
+  cursor: pointer;
 }
 
 @media screen and (max-width: 800px) {
@@ -129,7 +136,6 @@ header > div {
   display: flex;
   align-items: center;
   gap: 1vw;
-  margin-right: 1.5vw;
 }
 
 header > form > input[type="text"] {
