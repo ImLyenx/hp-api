@@ -1,4 +1,4 @@
-main {
+.cards-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-column-gap: 24px;
@@ -13,7 +13,7 @@ main {
 }
 
 @media screen and (max-width: 1024px) {
-  main {
+  .cards-container {
     grid-template-columns: repeat(1, 1fr);
   }
   .card-img {
@@ -21,7 +21,7 @@ main {
   }
 }
 
-main > div {
+.cards-container > div {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -79,6 +79,40 @@ main > div {
   display: none !important;
 }
 
+.profile-items {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  font-size: x-large;
+  margin-bottom: 48px;
+}
+
+.profile-items p {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-items p span {
+  font-weight: bold;
+}
+
+i.fa-star {
+  color: gold;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 4px;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+i.fa-star:hover {
+  transform: scale(1.2);
+}
+
 .card {
   position: relative;
 }
@@ -93,6 +127,4 @@ main > div {
   cursor: default;
 }
 
-.cards-container-onlyone .house-name {
-  left: 22% !important;
-}
+

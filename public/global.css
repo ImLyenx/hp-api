@@ -107,6 +107,10 @@ nav {
   pointer-events: all;
 }
 
+.user-menu button {
+  width: 100%;
+}
+
 .hidden {
   display: none !important;
 }
@@ -443,4 +447,8 @@ button {
   font-size: x-large;
   transition: all 0.3s ease-in-out;
   /* background-color: red; */
+}
+
+button:disabled {
+  cursor: not-allowed;
 }

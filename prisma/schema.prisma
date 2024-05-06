@@ -8,22 +8,23 @@ datasource db {
 }
 
 model Card {
-  id    Int    @id @default(autoincrement())
-  name  String
-  slug  String @unique
-  house String @db.VarChar(32)
-  image String
+  id        Int        @id @default(autoincrement())
+  name      String
+  slug      String     @unique
+  house     String     @db.VarChar(32)
+  image     String
   userCards UserCard[]
 }
 
 model User {
-  id               Int      @id @default(autoincrement())
-  email            String   @unique
+  id               Int        @id @default(autoincrement())
+  email            String     @unique
   name             String
   lastHouseVisited String
   password         String
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  lastOpening      DateTime?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
   userCards        UserCard[]
 }
 
@@ -31,8 +32,10 @@ model UserCard {
   id     Int  @id @default(autoincrement())
   userId Int
   cardId Int
-  user   User @relation(fields: [userId], references: [id])
+  isFavorite Boolean @default(false)
   card   Card @relation(fields: [cardId], references: [id])
+  user   User @relation(fields: [userId], references: [id])
 
   @@unique([userId, cardId])
+  @@index([cardId], map: "UserCard_cardId_fkey")
 }

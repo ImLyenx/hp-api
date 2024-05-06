@@ -52,7 +52,7 @@
         <i class="fas fa-user-large"></i>
       </div>
       <div class="forms hidden">
-        <form class="login-form" onsubmit="handleLogin(event)"
+        <form class="login-form" onsubmit="handleLogin(event)">
           <label for="login-email">Email adress</label>
           <input type="email" id="login-email" />
           <label for="login-password">Password</label>
@@ -76,7 +76,10 @@
         <div class="user-menu hidden">
           <p class="user-name"></p>
           <p class="user-email"></p>
-          <button class="logout"><i class="fas fa-user-large-slash"></i>Logout</button>
+          <a href="/profile"><button>Profil</button></a>
+          <button class="logout">
+            <i class="fas fa-user-large-slash"></i>Logout
+          </button>
         </div>
       </div>
       <script>
@@ -87,19 +90,16 @@
         });
 
         function loginStatus() {
-          console.log("first")
           if (localStorage.getItem("token")) {
             document.querySelector(".login").classList.add("hidden");
             document.querySelector(".user").classList.remove("hidden");
             document.querySelector(".forms").classList.add("hidden");
-            console.log('loggedin')
           } else {
             document.querySelector(".login").classList.remove("hidden");
             document.querySelector(".user").classList.add("hidden");
             document.querySelector(".forms").classList.add("hidden");
             document.querySelector(".user-menu").classList.add("hidden");
             document.querySelector(".login-form").classList.remove("hidden");
-            console.log('loggedout')
           }
         }
         loginStatus();
@@ -126,67 +126,68 @@
             .catch((error) => {
               console.error("There was an error!", error);
             });
-          }
+        }
 
-          function handleRegister(e) {
-            e.preventDefault();
-            const email = document.getElementById("register-email").value;
-            const name = document.getElementById("name").value;
-            const password = document.getElementById("register-password").value;
-            fetch("/api/users", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ email, name, password }),
+        function handleRegister(e) {
+          e.preventDefault();
+          const email = document.getElementById("register-email").value;
+          const name = document.getElementById("name").value;
+          const password = document.getElementById("register-password").value;
+          fetch("/api/users", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, name, password }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              localStorage.setItem("token", data.token);
+              forms.classList.add("hidden");
+              loginStatus();
             })
-              .then((response) => response.json())
-              .then((data) => {
-                localStorage.setItem("token", data.token);
-                forms.classList.add("hidden");
-                loginStatus();
-              })
-              .catch((error) => {
-                console.error("There was an error!", error);
-              });
-          }
-          
-          const logoutButton = document.querySelector(".logout");
-          logoutButton.addEventListener("click", () => {
-            localStorage.removeItem("token");
-            loginStatus();
-          });
-
-          const userMenuButton = document.querySelector(".user");
-          const userMenu = document.querySelector(".user-menu");
-          const loginForm = document.querySelector(".login-form");
-          userMenuButton.addEventListener("click", () => {
-            forms.classList.toggle("hidden");
-            userMenu.classList.toggle("hidden");
-            loginForm.classList.add("hidden");
-            const token = localStorage.getItem("token");
-            const payload = token.split(".")[1];
-            const decodedPayload = atob(payload);
-            const user = JSON.parse(decodedPayload);
-            const id = user.id;
-            fetch("/api/users/" + id)
-              .then((response) => response.json())
-              .then((data) => {
-                document.querySelector(".user-name").innerText = data.name;
-                document.querySelector(".user-email").innerText = data.email;
-              })
-              .catch((error) => {
-                console.error("There was an error!", error);
-              });
-          });
-
-          const tip = document.querySelectorAll(".tip");
-          tip.forEach((element) => {
-            element.addEventListener("click", () => {
-              document.querySelector(".login-form").classList.toggle("hidden");
-              document.querySelector(".register-form").classList.toggle("hidden");
+            .catch((error) => {
+              console.error("There was an error!", error);
             });
+        }
+
+        const logoutButton = document.querySelector(".logout");
+        logoutButton.addEventListener("click", () => {
+          localStorage.removeItem("token");
+          loginStatus();
+        });
+
+        const userMenuButton = document.querySelector(".user");
+        const userMenu = document.querySelector(".user-menu");
+        const loginForm = document.querySelector(".login-form");
+        userMenuButton.addEventListener("click", () => {
+          forms.classList.toggle("hidden");
+          userMenu.classList.toggle("hidden");
+          loginForm.classList.add("hidden");
+          fetch("/api/profile", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              document.querySelector(".user-name").innerText = data.name;
+              document.querySelector(".user-email").innerText = data.email;
+            })
+            .catch((error) => {
+              console.error("There was an error!", error);
+            });
+        });
+
+        const tip = document.querySelectorAll(".tip");
+        tip.forEach((element) => {
+          element.addEventListener("click", () => {
+            document.querySelector(".login-form").classList.toggle("hidden");
+            document.querySelector(".register-form").classList.toggle("hidden");
           });
+        });
       </script>
       <input type="checkbox" id="burger-toggle" />
       <label for="burger-toggle" class="burger-icon">

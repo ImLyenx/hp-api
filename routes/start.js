@@ -43,6 +43,26 @@ router.post("/api/cards", CardsController.showMultiple);
 
 router.get("/api/usercards", authenticateToken, UserCardsController.index);
 router.post("/api/usercards", authenticateToken, UserCardsController.store);
+router.post(
+  "/api/usercards/favorite",
+  authenticateToken,
+  UserCardsController.setFavorite
+);
+router.get(
+  "/api/usercards/canuseropenbooster",
+  authenticateToken,
+  UserCardsController.canUserOpenBooster
+);
+router.get(
+  "/api/usercards/openbooster",
+  authenticateToken,
+  UserCardsController.openBooster
+);
+router.get(
+  "/api/usercards/timeuntilnextbooster",
+  authenticateToken,
+  UserCardsController.timeUntilNextBooster
+);
 
 router.get("/api/test", (req, res) => {
   res.json({ house: "" });

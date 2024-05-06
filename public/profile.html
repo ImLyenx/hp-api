@@ -4,24 +4,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="global.css" />
-    <link rel="stylesheet" href="cards.css" />
     <script
       defer
       src="https://kit.fontawesome.com/aa06e5f929.js"
       crossorigin="anonymous"
     ></script>
-    <meta name="description" content="Rules of the game" />
+    <meta name="description" content="Harry Potter Trading Card Game" />
     <link
       rel="shortcut icon"
-      href="../assets/images/logo.png"
+      href="assets/images/logo.png"
       type="image/x-icon"
     />
-    <title>Cards</title>
+    <link rel="stylesheet" href="profile.css" />
+    <title>Harry Potter TCG</title>
   </head>
   <body>
     <header>
       <div class="logo">
-        <img src="../assets/images/logo.png" alt="" />
+        <img src="assets/images/logo.png" alt="" />
       </div>
       <nav>
         <ul class="navbar-list">
@@ -45,34 +45,6 @@
           </li>
         </ul>
       </nav>
-      <form class="search">
-        <input
-          id="searchInput"
-          type="text"
-          placeholder="Search..."
-          oninput="search()"
-        />
-        <button id="submit-search" type="submit" aria-label="Submit button">
-          <i class="fas fa-magnifying-glass"></i>
-        </button>
-      </form>
-      <script>
-        function search() {
-          const searchTerm = document
-            .getElementById("searchInput")
-            .value.toLowerCase();
-
-          const cards = document.querySelectorAll(".card-img");
-          cards.forEach((card) => {
-            const alt = card.getAttribute("alt").toLowerCase();
-            if (alt.includes(searchTerm)) {
-              card.parentElement.style.display = "flex";
-            } else {
-              card.parentElement.style.display = "none";
-            }
-          });
-        }
-      </script>
       <div class="login">
         <i class="fas fa-right-to-bracket"></i>
       </div>
@@ -182,6 +154,7 @@
         const logoutButton = document.querySelector(".logout");
         logoutButton.addEventListener("click", () => {
           localStorage.removeItem("token");
+          window.location.href = "/";
           loginStatus();
         });
 
@@ -217,7 +190,6 @@
           });
         });
       </script>
-
       <input type="checkbox" id="burger-toggle" />
       <label for="burger-toggle" class="burger-icon">
         <i class="fas fa-bars"></i>
@@ -256,19 +228,116 @@
         });
       </script>
     </header>
-    <div class="big-title">
-      <h1>Characters</h1>
-      <div class="tags-container"></div>
-    </div>
-    <main class="cards-container" id="cards-container">
-      <!-- <div>
-        <img
-          class="card-img"
-          src="../../assets/images/cards/HarryPotter.png"
-          alt=""
-        />
-        <h4>Harry Potter</h4>
-      </div> -->
+    <main>
+      <div class="profile">
+        <div class="big-title">
+          <h1>Profil</h1>
+          <div class="profile-items">
+            <p>Nom: <span id="profile-name"></span></p>
+            <p>Adresse e-mail: <span id="profile-email"></span></p>
+            <p>Dernière maison visitée: <span id="profile-house"></span></p>
+            <p>
+              Ouvrir un booster:
+              <button id="profile-isboosteravailable">Ouvrir</button>
+            </p>
+          </div>
+        </div>
+        <div class="big-title">
+          <h1>Vos cartes</h1>
+          <div class="tags-container"></div>
+          <div class="cards-container" id="cards-container">
+            <!-- <div>
+                <img
+                class="card-img"
+                src="../../assets/images/cards/HarryPotter.png"
+                alt=""
+                />
+                <h4>Harry Potter</h4>
+            </div> -->
+          </div>
+        </div>
+      </div>
+      <script>
+        window.addEventListener("pageshow", (event) => {
+          if (event.persisted) {
+            window.location.reload();
+          }
+          if (performance.navigation.type == 2) {
+            location.reload();
+          }
+        });
+        fetch("/api/profile", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            document.getElementById("profile-name").innerText = data.name;
+            document.getElementById("profile-email").innerText = data.email;
+            document.getElementById("profile-house").innerText =
+              capitalizeFirstLetter(data.lastHouseVisited);
+          })
+          .catch((error) => {
+            localStorage.removeItem("token");
+            window.location.href = "/";
+          });
+        const updateBoosterButton = () => {
+          fetch("/api/usercards/canuseropenbooster", {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              document.getElementById("profile-isboosteravailable").disabled =
+                !data.canOpen;
+              if (!data.canOpen) {
+                fetch("/api/usercards/timeuntilnextbooster", {
+                  headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                  },
+                })
+                  .then((response) => response.json())
+                  .then((data) => {
+                    const timeInSeconds = data.timeUntilNextBooster;
+                    const hours = Math.floor(timeInSeconds / 1000 / 60 / 60);
+                    const minutes = Math.floor(
+                      (timeInSeconds / 1000 / 60) % 60
+                    );
+                    document.getElementById(
+                      "profile-isboosteravailable"
+                    ).innerText = `Disponible dans ${hours}h${minutes}m`;
+                  })
+                  .catch((error) => {
+                    console.error("There was an error!", error);
+                  });
+              }
+            })
+            .catch((error) => {
+              console.error("There was an error!", error);
+            });
+        };
+        updateBoosterButton();
+        document
+          .getElementById("profile-isboosteravailable")
+          .addEventListener("click", () => {
+            fetch("/api/usercards/openbooster", {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                createCards();
+                updateBoosterButton();
+              })
+              .catch((error) => {
+                console.error("There was an error!", error);
+              });
+          });
+      </script>
       <script>
         const createCards = async () => {
           try {
@@ -279,13 +348,15 @@
               "hufflepuff",
             ];
             const container = document.querySelector(".cards-container");
+            container.innerHTML = "";
+            const tagsContainer = document.querySelector(".tags-container");
 
+            tagsContainer.innerHTML = "";
             function formatCheckboxTitle(string) {
               return " " + string.charAt(0).toUpperCase() + string.slice(1);
             }
 
             tagList.forEach((element) => {
-              const tagsContainer = document.querySelector(".tags-container");
               const tag = document.createElement("label");
               tag.classList.add("tag");
               const checkbox = document.createElement("input");
@@ -314,14 +385,18 @@
               tagsContainer.appendChild(tag);
             });
 
-            const imageResponse = await fetch("/api/cards");
-            const imageData = await imageResponse.json();
-            imageData.forEach((element) => {
+            const imageResponse = await fetch("/api/usercards", {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            });
+            const userCardData = await imageResponse.json();
+            userCardData.forEach((element) => {
               container.appendChild(document.createElement("div"));
               const div = container.lastChild;
-              div.id = element.id;
+              div.id = element.card.id;
               div.classList.add("card");
-              const house = element.house || "no-house";
+              const house = element.card.house || "no-house";
               div.addEventListener("click", () => {
                 if (localStorage.getItem("token")) {
                   fetch(`/api/latesthouse`, {
@@ -338,26 +413,48 @@
                       }
                     })
                     .then(() => {
-                      window.location.href = `?id=${div.id}`;
+                      window.location.href = `/cards?id=${div.id}`;
                     })
                     .catch((error) => {
                       console.error("There was an error!", error);
                     });
                 } else {
-                  window.location.href = `?id=${div.id}`;
+                  window.location.href = `/cards?id=${div.id}`;
                 }
               });
               let img = document.createElement("img");
               img.classList.add("card-img");
-              img.src = `/assets/images/cards/${element.image}`;
-              img.alt = element.name;
-              img.classList.add(element.house || "no-house");
+              img.src = `/assets/images/cards/${element.card.image}`;
+              img.alt = element.card.name;
+              img.classList.add(element.card.house || "no-house");
               div.appendChild(img);
+              const fav = document.createElement("i");
+              fav.classList.add("fa-star");
+              if (element.isFavorite) {
+                fav.classList.add("fa-solid");
+              } else {
+                fav.classList.add("fa-regular");
+              }
+              fav.addEventListener("click", () => {
+                event.stopPropagation();
+                fetch("/api/usercards/favorite", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                  },
+                  body: JSON.stringify({
+                    cardId: element.card.id,
+                    setTo: !element.isFavorite,
+                  }),
+                }).then(() => createCards());
+              });
+              div.appendChild(fav);
               const houseName = document.createElement("p");
               houseName.innerText =
-                capitalizeFirstLetter(element.house) || "Pas de maison";
+                capitalizeFirstLetter(element.card.house) || "Pas de maison";
               houseName.classList.add("house-name");
-              switch (element.house) {
+              switch (element.card.house) {
                 case "gryffindor":
                   houseName.style.color = "red";
                   break;
@@ -375,33 +472,15 @@
               }
               div.appendChild(houseName);
               let title = document.createElement("h4");
-              title.innerText = element.name;
+              title.innerText = element.card.name;
               div.appendChild(title);
             });
-            showOnlyOneCard();
           } catch (error) {
             console.error("Erreur lors du traitement des images :", error);
           }
         };
 
         createCards();
-
-        function showOnlyOneCard() {
-          const urlParams = new URLSearchParams(window.location.search);
-          const id = urlParams.get("id");
-
-          if (id) {
-            const cards = document.querySelectorAll(".card");
-            cards.forEach((card) => {
-              if (card.id !== id) {
-                card.classList.add("card-hidden");
-              }
-            });
-            document
-              .getElementById("cards-container")
-              .classList.add("cards-container-onlyone");
-          }
-        }
 
         function capitalizeFirstLetter(string) {
           return string.charAt(0).toUpperCase() + string.slice(1);
