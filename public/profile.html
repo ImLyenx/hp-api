@@ -233,18 +233,28 @@
         <div class="big-title">
           <h1>Profil</h1>
           <div class="profile-items">
-            <p>Nom: <span id="profile-name"></span></p>
-            <p>Adresse e-mail: <span id="profile-email"></span></p>
-            <p>Dernière maison visitée: <span id="profile-house"></span></p>
             <p>
-              Ouvrir un booster:
+              Nom <span id="profile-name"></span>
+              <i class="fas fa-signature"></i>
+            </p>
+            <p>
+              Adresse e-mail <span id="profile-email"></span
+              ><i class="fas fa-at"></i>
+            </p>
+            <p>
+              Dernière maison visitée <span id="profile-house"></span
+              ><i class="fa fa-house"></i>
+            </p>
+            <p>
+              Ouvrir un booster
               <button id="profile-isboosteravailable">Ouvrir</button>
+              <i class="fas fa-file-circle-plus"></i>
             </p>
           </div>
         </div>
         <div class="big-title">
           <h1>Vos cartes</h1>
-          <div class="tags-container"></div>
+          <div class="tags-container">Filtres :</div>
           <div class="cards-container" id="cards-container">
             <!-- <div>
                 <img
@@ -307,7 +317,9 @@
                     );
                     document.getElementById(
                       "profile-isboosteravailable"
-                    ).innerText = `Disponible dans ${hours}h${minutes}m`;
+                    ).innerText = `Disponible dans ${hours}h${minutes
+                      .toString()
+                      .padStart(2, "0")}m`;
                   })
                   .catch((error) => {
                     console.error("There was an error!", error);
@@ -351,7 +363,7 @@
             container.innerHTML = "";
             const tagsContainer = document.querySelector(".tags-container");
 
-            tagsContainer.innerHTML = "";
+            tagsContainer.innerHTML = "Filtres :";
             function formatCheckboxTitle(string) {
               return " " + string.charAt(0).toUpperCase() + string.slice(1);
             }
@@ -459,16 +471,16 @@
                   houseName.style.color = "red";
                   break;
                 case "slytherin":
-                  houseName.style.color = "lime";
+                  houseName.style.color = "green";
                   break;
                 case "ravenclaw":
-                  houseName.style.color = "cyan";
+                  houseName.style.color = "blue";
                   break;
                 case "hufflepuff":
-                  houseName.style.color = "yellow";
+                  houseName.style.color = "olive";
                   break;
                 default:
-                  houseName.style.color = "white";
+                  houseName.style.color = "black";
               }
               div.appendChild(houseName);
               let title = document.createElement("h4");
