@@ -26,16 +26,43 @@ model User {
   createdAt        DateTime   @default(now())
   updatedAt        DateTime   @updatedAt
   userCards        UserCard[]
+  sentTrades       Trade[]    @relation("TradeSender")
+  receivedTrades   Trade[]    @relation("TradeReceiver")
 }
 
 model UserCard {
-  id     Int  @id @default(autoincrement())
-  userId Int
-  cardId Int
-  isFavorite Boolean @default(false)
-  card   Card @relation(fields: [cardId], references: [id])
-  user   User @relation(fields: [userId], references: [id])
+  id            Int             @id @default(autoincrement())
+  userId        Int
+  cardId        Int
+  isFavorite    Boolean         @default(false)
+  card          Card            @relation(fields: [cardId], references: [id])
+  user          User            @relation(fields: [userId], references: [id])
+  TradeUserCard TradeUserCard[]
 
   @@unique([userId, cardId])
   @@index([cardId], map: "UserCard_cardId_fkey")
+}
+
+model Trade {
+  id             Int             @id @default(autoincrement())
+  senderId       Int
+  receiverId     Int
+  status         String
+  expirationDate DateTime
+  sender         User            @relation("TradeSender", fields: [senderId], references: [id])
+  receiver       User            @relation("TradeReceiver", fields: [receiverId], references: [id])
+  cards          TradeUserCard[]
+
+  @@index([senderId], name: "senderId")
+  @@index([receiverId], name: "receiverId")
+}
+
+model TradeUserCard {
+  tradeId    Int
+  userCardId Int
+  isSender   Boolean
+  trade      Trade    @relation(fields: [tradeId], references: [id])
+  userCard   UserCard @relation(fields: [userCardId], references: [id])
+
+  @@id([tradeId, userCardId])
 }

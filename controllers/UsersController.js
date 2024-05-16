@@ -6,6 +6,10 @@ class UsersController {
   async index(req, res) {
     try {
       const users = await PrismaClient.user.findMany();
+      for (let user of users) {
+        delete user.password;
+        delete user.email;
+      }
       res.json(users);
     } catch (error) {
       console.error(error);
@@ -24,7 +28,7 @@ class UsersController {
         data: {
           ...body,
           password: hashedPassword,
-          lastHouseVisited: "",
+          lastHouseVisited: "no-house",
         },
       });
       const token = generateAccessToken(user.email, user.id);

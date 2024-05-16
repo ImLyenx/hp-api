@@ -31,6 +31,48 @@ class UserCardsController {
     }
   }
 
+  async show(req, res) {
+    try {
+      const { id } = req.params;
+      const userCard = await PrismaClient.userCard.findUnique({
+        where: {
+          id: parseInt(id),
+        },
+        include: {
+          card: true,
+        },
+      });
+      res.send(userCard);
+    } catch (error) {
+      console.error(error);
+      res
+
+        .status(500)
+        .json({ error: "An error occurred while fetching the user's card" });
+    }
+  }
+
+  async getUserCards(req, res) {
+    try {
+      const { id } = req.params;
+      const userCards = await PrismaClient.userCard.findMany({
+        where: {
+          userId: parseInt(id),
+        },
+        include: {
+          card: true,
+        },
+      });
+      res.send(userCards);
+    } catch (error) {
+      console.error(error);
+      res
+
+        .status(500)
+        .json({ error: "An error occurred while fetching the user's cards" });
+    }
+  }
+
   async store(req, res) {
     try {
       const { id } = req.user;

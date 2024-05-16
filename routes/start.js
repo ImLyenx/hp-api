@@ -3,6 +3,7 @@ const AuthController = require("../controllers/AuthController");
 const UsersController = require("../controllers/UsersController");
 const CardsController = require("../controllers/CardsController");
 const UserCardsController = require("../controllers/UserCardsController");
+const TradesController = require("../controllers/TradesController");
 
 const { authenticateToken } = require("../middlewares/auth");
 
@@ -42,6 +43,8 @@ router.get("/api/cards/:id", CardsController.show);
 router.post("/api/cards", CardsController.showMultiple);
 
 router.get("/api/usercards", authenticateToken, UserCardsController.index);
+router.get("/api/usercards/:id", UserCardsController.show);
+router.get("/api/users/:id/cards", UserCardsController.getUserCards);
 router.post("/api/usercards", authenticateToken, UserCardsController.store);
 router.post(
   "/api/usercards/favorite",
@@ -49,23 +52,47 @@ router.post(
   UserCardsController.setFavorite
 );
 router.get(
-  "/api/usercards/canuseropenbooster",
+  "/api/canuseropenbooster",
   authenticateToken,
   UserCardsController.canUserOpenBooster
 );
 router.get(
-  "/api/usercards/openbooster",
+  "/api/openbooster",
   authenticateToken,
   UserCardsController.openBooster
 );
 router.get(
-  "/api/usercards/timeuntilnextbooster",
+  "/api/timeuntilnextbooster",
   authenticateToken,
   UserCardsController.timeUntilNextBooster
 );
 
-router.get("/api/test", (req, res) => {
-  res.json({ house: "" });
-});
+router.post("/api/trades", authenticateToken, TradesController.createTrade);
+router.get(
+  "/api/trades/sent",
+  authenticateToken,
+  TradesController.getSentTrades
+);
+router.get(
+  "/api/trades/received",
+  authenticateToken,
+  TradesController.getReceivedTrades
+);
+router.get(
+  "/api/trades/:tradeId/accept",
+  authenticateToken,
+  TradesController.acceptTrade
+);
+router.get(
+  "/api/trades/:tradeId/cancel",
+  authenticateToken,
+  TradesController.cancelTrade
+);
+router.get(
+  "/api/trades/:tradeId/deny",
+  authenticateToken,
+  TradesController.denyTrade
+);
+router.get("/api/trades/:id/cards", TradesController.getTradeCards);
 
 module.exports = router;

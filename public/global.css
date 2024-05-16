@@ -71,7 +71,9 @@ nav {
 }
 
 .login,
-.user {
+.user,
+.trade,
+.notifications {
   text-decoration: none;
   color: inherit;
   display: flex;
@@ -87,8 +89,15 @@ nav {
   transition: all 0.3s ease-in-out;
 }
 
+.trade,
+.notifications {
+  margin-right: 0;
+}
+
 .login:hover,
-.user:hover {
+.user:hover,
+.trade:hover,
+.notifications:hover {
   transform: scale(1.1);
 }
 
@@ -463,4 +472,178 @@ button:hover {
 
 button:disabled {
   cursor: not-allowed;
+}
+
+#trade-page,
+#notifications-page {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  left: 0;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  pointer-events: all;
+  z-index: 2000;
+  overflow: hidden;
+}
+
+body.trade-page-open {
+  overflow: hidden;
+}
+
+.trade-menu,
+.notifications-menu {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ddd;
+  padding: 16px;
+  border-radius: 15px;
+  z-index: 2001;
+  pointer-events: all;
+  width: 80vw;
+}
+
+.trade-menu {
+  height: 80vh;
+}
+
+.notifications-menu {
+  width: 30vw;
+  height: fit-content;
+  max-height: 60vh;
+}
+
+.trade-menu form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1vh;
+}
+
+.cards-separator {
+  display: flex;
+  gap: 1vw;
+}
+
+.trade-menu > form > div > div > div {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: min-content;
+  gap: 1vw;
+  height: 60vh;
+  width: calc(39.5vw - 16px);
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.card {
+  cursor: pointer;
+}
+
+.trade-menu > form > button {
+  max-width: 20vw;
+}
+.trade-menu > form > select {
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-size: large;
+  max-width: 20vw;
+  cursor: pointer;
+}
+
+.trade-menu > form > div > div > div > div > i {
+  position: absolute;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-size: xx-large;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: lime;
+  text-shadow: 0 0 10px rgb(0, 0, 0);
+}
+
+.cards-lists-separator {
+  width: 100%;
+  display: flex;
+  gap: 1vw;
+}
+
+.cards-lists-separator > div {
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+  width: 50%;
+}
+
+.notifications {
+  position: relative;
+}
+
+.notification-counter {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: red;
+  color: white;
+  padding: 4px;
+  border-radius: 50%;
+  font-size: xx-small;
+  font-weight: normal;
+  line-height: 30%;
+}
+
+.notifications-menu > h2 {
+  margin-bottom: 12px;
+}
+
+.notifications-menu > div {
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.notifications-menu > div > div {
+  border-bottom: 1px solid black;
+  margin-top: 12px;
+}
+
+.notifications-menu > div > div:last-of-type {
+  border-bottom: none;
+}
+
+.notifications-menu > div > div > p {
+  font-size: large;
+  margin-left: 6px;
+  margin-bottom: 6px;
+}
+
+.button-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 1vw;
+}
+.button-container button {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  margin: 8px;
+  margin-top: 16px;
+  margin-bottom: 24px;
+  font-size: large;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.cards-lists-separator div {
+  margin-left: 4px;
 }

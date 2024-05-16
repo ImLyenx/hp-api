@@ -45,6 +45,14 @@
           </li>
         </ul>
       </nav>
+      <div class="notifications hidden">
+        <i class="fas fa-bell">
+          <span class="notification-counter">0</span>
+        </i>
+      </div>
+      <div class="trade hidden">
+        <i class="fas fa-exchange-alt"></i>
+      </div>
       <div class="login">
         <i class="fas fa-right-to-bracket"></i>
       </div>
@@ -89,17 +97,63 @@
           forms.classList.toggle("hidden");
         });
 
+        document.querySelector(".trade").addEventListener("click", () => {
+          document.querySelector("#trade-page").classList.remove("hidden");
+          document.body.classList.add("trade-page-open");
+          document
+            .querySelector("#trade-page")
+            .addEventListener("click", () => {
+              document.querySelector("#trade-page").classList.add("hidden");
+              document.body.classList.remove("trade-page-open");
+            });
+
+          document
+            .querySelector(".trade-menu")
+            .addEventListener("click", (e) => {
+              e.stopPropagation();
+            });
+
+          updateSenderCards();
+        });
+
+        document
+          .querySelector(".notifications")
+          .addEventListener("click", () => {
+            document
+              .querySelector("#notifications-page")
+              .classList.remove("hidden");
+            document.body.classList.add("trade-page-open");
+            document
+              .querySelector("#notifications-page")
+              .addEventListener("click", () => {
+                document
+                  .querySelector("#notifications-page")
+                  .classList.add("hidden");
+                document.body.classList.remove("trade-page-open");
+              });
+
+            document
+              .querySelector(".notifications-menu")
+              .addEventListener("click", (e) => {
+                e.stopPropagation();
+              });
+          });
+
         function loginStatus() {
           if (localStorage.getItem("token")) {
             document.querySelector(".login").classList.add("hidden");
             document.querySelector(".user").classList.remove("hidden");
             document.querySelector(".forms").classList.add("hidden");
+            document.querySelector(".trade").classList.remove("hidden");
+            document.querySelector(".notifications").classList.remove("hidden");
           } else {
             document.querySelector(".login").classList.remove("hidden");
             document.querySelector(".user").classList.add("hidden");
             document.querySelector(".forms").classList.add("hidden");
             document.querySelector(".user-menu").classList.add("hidden");
             document.querySelector(".login-form").classList.remove("hidden");
+            document.querySelector(".trade").classList.add("hidden");
+            document.querySelector(".notifications").classList.add("hidden");
           }
         }
         loginStatus();
@@ -293,7 +347,7 @@
             window.location.href = "/";
           });
         const updateBoosterButton = () => {
-          fetch("/api/usercards/canuseropenbooster", {
+          fetch("/api/canuseropenbooster", {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
@@ -303,7 +357,7 @@
               document.getElementById("profile-isboosteravailable").disabled =
                 !data.canOpen;
               if (!data.canOpen) {
-                fetch("/api/usercards/timeuntilnextbooster", {
+                fetch("/api/timeuntilnextbooster", {
                   headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
                   },
@@ -334,7 +388,7 @@
         document
           .getElementById("profile-isboosteravailable")
           .addEventListener("click", () => {
-            fetch("/api/usercards/openbooster", {
+            fetch("/api/openbooster", {
               method: "GET",
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -498,6 +552,292 @@
           return string.charAt(0).toUpperCase() + string.slice(1);
         }
       </script>
+
+      <div class="hidden" id="notifications-page">
+        <div class="notifications-menu">
+          <h2>Notifications</h2>
+          <div class="notifications-container"></div>
+        </div>
+
+        <script>
+          async function displayNotifications() {
+            const notificationsContainer = document.querySelector(
+              ".notifications-container"
+            );
+            fetch("/api/trades/received", {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            })
+              .then((response) => response.json())
+              .then(async (data) => {
+                if (data.length === 0) {
+                  document
+                    .querySelector(".notification-counter")
+                    .classList.add("hidden");
+                  notifButton = document.querySelector(".notifications");
+                  notifButton.inert = true;
+                  notifButton.style.color = "gray";
+                }
+                document.querySelector(".notification-counter").innerText =
+                  data.length;
+                data.forEach(async (trade) => {
+                  const response = fetch(`/api/users/${trade.senderId}`);
+                  const sender = await response.then((res) => res.json());
+                  const notification = document.createElement("div");
+                  notification.classList.add("notification");
+                  const p = document.createElement("p");
+                  p.innerText = `Demande d'échange de ${sender.name}`;
+                  notification.appendChild(p);
+                  const cardsListsSeparator = document.createElement("div");
+                  cardsListsSeparator.classList.add("cards-lists-separator");
+                  const senderCardsList = document.createElement("div");
+                  senderCardsList.id = "trade-sender-cards-list";
+                  const senderCardsListLabel = document.createElement("div");
+                  senderCardsListLabel.innerText = "Vous recevrez :";
+                  const receiverCardsList = document.createElement("div");
+                  receiverCardsList.id = "trade-receiver-cards-list";
+                  const receiverCardsListLabel = document.createElement("div");
+                  receiverCardsListLabel.innerText = "Contre :";
+                  senderCardsList.appendChild(senderCardsListLabel);
+                  receiverCardsList.appendChild(receiverCardsListLabel);
+                  trade.cards.forEach(async (card) => {
+                    console.log(card.userCardId, card.isSender);
+                    const userCardResponse = fetch(
+                      `/api/usercards/${card.userCardId}`
+                    );
+                    const userCard = await userCardResponse.then((res) =>
+                      res.json()
+                    );
+                    const div = document.createElement("div");
+                    div.classList.add("card");
+                    div.innerText = "- " + userCard.card.name;
+                    if (card.isSender) {
+                      senderCardsList.appendChild(div);
+                    } else {
+                      receiverCardsList.appendChild(div);
+                    }
+                  });
+                  cardsListsSeparator.appendChild(senderCardsList);
+                  cardsListsSeparator.appendChild(receiverCardsList);
+
+                  notification.appendChild(cardsListsSeparator);
+
+                  const buttonContainer = document.createElement("div");
+                  buttonContainer.classList.add("button-container");
+
+                  const denyButton = document.createElement("button");
+                  denyButton.innerText = "Refuser";
+                  denyButton.addEventListener("click", () => {
+                    fetch(`/api/trades/${trade.id}/deny`, {
+                      headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                          "token"
+                        )}`,
+                        json: { tradeId: parseInt(trade.id) },
+                      },
+                    }).then(() => {
+                      notification.remove();
+                    });
+                  });
+                  buttonContainer.appendChild(denyButton);
+                  const acceptButton = document.createElement("button");
+                  acceptButton.innerText = "Accepter";
+                  acceptButton.addEventListener("click", () => {
+                    fetch(`/api/trades/${trade.id}/accept`, {
+                      headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                          "token"
+                        )}`,
+                      },
+                    }).then(() => {
+                      notification.remove();
+                      updateSenderCards();
+                      createCards();
+                    });
+                  });
+                  buttonContainer.appendChild(acceptButton);
+                  notification.appendChild(buttonContainer);
+                  notificationsContainer.appendChild(notification);
+                });
+              })
+              .catch((error) => {
+                console.error("There was an error!", error);
+              });
+          }
+
+          displayNotifications();
+        </script>
+      </div>
+
+      <!-- MARK: Trade -->
+      <div class="hidden" id="trade-page">
+        <div class="trade-menu">
+          <form id="trade-form" onsubmit="sendTradeRequest(event)">
+            <label for="trade-user">Utilisateur :</label>
+            <select name="user" id="trade-user">
+              <option value="0" selected>Choisissez un destinataire</option>
+            </select>
+            <div class="cards-separator">
+              <div>
+                <label for="trade-sender-cards">Vos cartes :</label>
+                <div id="trade-sender-cards"></div>
+              </div>
+              <div>
+                <label for="trade-receiver-cards">Ses cartes :</label>
+                <div id="trade-receiver-cards"></div>
+              </div>
+            </div>
+            <button type="submit">Envoyer la demande d'échange</button>
+
+            <script defer>
+              let selectedSenderCards = [];
+              let selectedReceiverCards = [];
+
+              const userSelect = document.getElementById("trade-user");
+
+              userSelect.addEventListener("change", () => {
+                updateReceiverCards();
+              });
+
+              fetch("/api/users")
+                .then((response) => response.json())
+                .then((data) => {
+                  data.forEach((user) => {
+                    const token = localStorage.getItem("token");
+                    const userId = JSON.parse(atob(token.split(".")[1])).id;
+                    if (user.id != userId) {
+                      const option = document.createElement("option");
+                      option.value = user.id;
+                      option.innerText = user.name;
+                      userSelect.appendChild(option);
+                    }
+                  });
+                })
+                .catch((error) => {
+                  console.error("There was an error!", error);
+                });
+              const senderCards = document.getElementById("trade-sender-cards");
+              function updateSenderCards() {
+                senderCards.innerHTML = "";
+                fetch("/api/usercards", {
+                  headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                  },
+                })
+                  .then((response) => response.json())
+                  .then((data) => {
+                    data.forEach((element) => {
+                      const div = document.createElement("div");
+                      div.id = element.id;
+                      div.classList.add("card");
+                      const img = document.createElement("img");
+                      img.classList.add("card-img");
+                      img.src = `/assets/images/cards/${element.card.image}`;
+                      img.alt = element.card.name;
+                      img.classList.add(element.card.house || "no-house");
+                      div.appendChild(img);
+                      const sel = document.createElement("i");
+                      sel.classList.add("fa-circle-check");
+                      sel.classList.add("fa-solid");
+                      sel.classList.add("hidden");
+                      div.addEventListener("click", () => {
+                        sel.classList.toggle("hidden");
+                        if (sel.classList.contains("hidden")) {
+                          selectedSenderCards = selectedSenderCards.filter(
+                            (card) => card !== parseInt(div.id)
+                          );
+                        } else {
+                          selectedSenderCards.push(parseInt(div.id));
+                        }
+                      });
+                      div.appendChild(sel);
+                      const title = document.createElement("h4");
+                      title.innerText = element.card.name;
+                      div.appendChild(title);
+                      senderCards.appendChild(div);
+                    });
+                  });
+              }
+              function updateReceiverCards() {
+                const receiverId = userSelect.value || 1;
+                fetch(`/api/users/${receiverId}/cards`, {
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                })
+                  .then((response) => response.json())
+                  .then((data) => {
+                    const receiverCards = document.getElementById(
+                      "trade-receiver-cards"
+                    );
+                    receiverCards.innerHTML = "";
+                    data.forEach((element) => {
+                      const div = document.createElement("div");
+                      div.id = element.id;
+                      div.classList.add("card");
+                      const img = document.createElement("img");
+                      img.classList.add("card-img");
+                      img.src = `/assets/images/cards/${element.card.image}`;
+                      img.alt = element.card.name;
+                      img.classList.add(element.card.house || "no-house");
+                      div.appendChild(img);
+                      const sel = document.createElement("i");
+                      sel.classList.add("fa-circle-check");
+                      sel.classList.add("fa-solid");
+                      sel.classList.add("hidden");
+                      div.addEventListener("click", () => {
+                        sel.classList.toggle("hidden");
+                        if (sel.classList.contains("hidden")) {
+                          selectedReceiverCards = selectedReceiverCards.filter(
+                            (card) => card !== parseInt(div.id)
+                          );
+                        } else {
+                          selectedReceiverCards.push(parseInt(div.id));
+                        }
+                      });
+                      div.appendChild(sel);
+                      const title = document.createElement("h4");
+                      title.innerText = element.card.name;
+                      div.appendChild(title);
+                      receiverCards.appendChild(div);
+                    });
+                  });
+              }
+
+              function sendTradeRequest(e) {
+                e.preventDefault();
+                if (
+                  userSelect.value === "0" ||
+                  (selectedSenderCards.length === 0 &&
+                    selectedReceiverCards.length === 0)
+                ) {
+                  console.log("not valid");
+                  return;
+                }
+                console.log(selectedReceiverCards, selectedSenderCards);
+                fetch("/api/trades", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                  },
+                  body: JSON.stringify({
+                    senderCards: selectedSenderCards,
+                    receiverCards: selectedReceiverCards,
+                    receiverId: parseInt(userSelect.value),
+                  }),
+                });
+
+                document.querySelector("#trade-page").classList.add("hidden");
+              }
+
+              updateSenderCards();
+              updateReceiverCards();
+            </script>
+          </form>
+        </div>
+      </div>
     </main>
     <footer>
       <div class="socials">
