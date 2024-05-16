@@ -162,7 +162,7 @@
           e.preventDefault();
           const email = document.getElementById("login-email").value;
           const password = document.getElementById("login-password").value;
-          fetch("/api/login", {
+          fetch("/api/auth/login", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -219,7 +219,7 @@
           forms.classList.toggle("hidden");
           userMenu.classList.toggle("hidden");
           loginForm.classList.add("hidden");
-          fetch("/api/profile", {
+          fetch("/api/me/profile", {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -330,7 +330,7 @@
             location.reload();
           }
         });
-        fetch("/api/profile", {
+        fetch("/api/me/profile", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -347,7 +347,7 @@
             window.location.href = "/";
           });
         const updateBoosterButton = () => {
-          fetch("/api/canuseropenbooster", {
+          fetch("/api/me/canopenbooster", {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
@@ -357,7 +357,7 @@
               document.getElementById("profile-isboosteravailable").disabled =
                 !data.canOpen;
               if (!data.canOpen) {
-                fetch("/api/timeuntilnextbooster", {
+                fetch("/api/me/timeuntilnextbooster", {
                   headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
                   },
@@ -388,7 +388,7 @@
         document
           .getElementById("profile-isboosteravailable")
           .addEventListener("click", () => {
-            fetch("/api/openbooster", {
+            fetch("/api/me/openbooster", {
               method: "GET",
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -465,7 +465,7 @@
               const house = element.card.house || "no-house";
               div.addEventListener("click", () => {
                 if (localStorage.getItem("token")) {
-                  fetch(`/api/latesthouse`, {
+                  fetch(`"/api/me/latesthouse"`, {
                     method: "POST",
                     headers: {
                       "Content-Type": "application/json",

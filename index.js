@@ -10,7 +10,7 @@ app.use(express.json());
 
 app.use(express.static("public", { extensions: ["html"] }));
 
-app.use("/", require("./routes/start"));
+app.use("/api/", require("./router"));
 
 app.listen(port, () => {
   console.log(`Server is running on ${ip.address()}:${port}`);

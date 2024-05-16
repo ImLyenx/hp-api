@@ -136,7 +136,7 @@
           e.preventDefault();
           const email = document.getElementById("login-email").value;
           const password = document.getElementById("login-password").value;
-          fetch("/api/login", {
+          fetch("/api/auth/login", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -192,7 +192,7 @@
           forms.classList.toggle("hidden");
           userMenu.classList.toggle("hidden");
           loginForm.classList.add("hidden");
-          fetch("/api/profile", {
+          fetch("/api/me/profile", {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -324,7 +324,7 @@
               const house = element.house || "no-house";
               div.addEventListener("click", () => {
                 if (localStorage.getItem("token")) {
-                  fetch(`/api/latesthouse`, {
+                  fetch(`"/api/me/latesthouse"`, {
                     method: "POST",
                     headers: {
                       "Content-Type": "application/json",

@@ -28,7 +28,7 @@ password = 'WIFI_PASSWORD_HERE'
 # -------------------------------------------------------------------------
 
 wlan.connect(ssid, password) # connecte la raspi au réseau
-url = "https://hp.lyenx.com/api/"
+url = "https://hp.lyenx.com/api"
 while not wlan.isconnected():
     setColor("100000")
     utime.sleep(0.5)
@@ -48,7 +48,7 @@ try:
     print("If there is an authentication error, the word 'token' will be printed out")
     EMAIL = str(input("E-mail adress : "))
     PASSWORD = str(input("Password : "))
-    r = urequests.post(url + "login",
+    r = urequests.post(url + "/auth/login",
     data=ujson.dumps({
         "email": EMAIL,
         "password": PASSWORD
@@ -61,7 +61,7 @@ try:
     r.close()
     
     while True:
-        r = urequests.get(url + "latesthouse",
+        r = urequests.get(url + "/me/latesthouse",
         headers={
             "Authorization": "Bearer " + token,
             "Content-Type": "application/json"
