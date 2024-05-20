@@ -72,3 +72,11 @@ main {
     width: 80vw;
   }
 }
+
+ul {
+  line-height: 32px;
+}
+
+p {
+  line-height: 24px;
+}
