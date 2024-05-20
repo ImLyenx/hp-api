@@ -321,7 +321,7 @@
               const house = element.house || "no-house";
               div.addEventListener("click", () => {
                 if (localStorage.getItem("token")) {
-                  fetch(`"/api/me/latesthouse"`, {
+                  fetch("/api/me/latesthouse", {
                     method: "POST",
                     headers: {
                       "Content-Type": "application/json",
