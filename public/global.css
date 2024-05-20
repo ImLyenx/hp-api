@@ -3,13 +3,27 @@
   padding: 0;
   box-sizing: border-box;
   font-family: roboto, sans-serif;
+}
 
+body {
   --bg-color: #e7e7e1;
+  --alt-bg-color: #dddddd;
   --text-color: #000;
+}
+
+body.dark {
+  --bg-color: #333;
+  --alt-bg-color: #555;
+  --text-color: #fff;
+}
+
+#theme-change {
+  cursor: pointer;
 }
 
 button {
   cursor: pointer;
+  color: var(--text-color);
 }
 
 @font-face {
@@ -40,6 +54,10 @@ header {
 .logo > img {
   height: 2em;
   margin-left: 5vw;
+}
+
+body.dark .logo > img {
+  filter: invert(1);
 }
 
 nav {
@@ -89,9 +107,18 @@ nav {
   transition: all 0.3s ease-in-out;
 }
 
-.trade,
 .notifications {
   margin-right: 0;
+}
+
+.trade {
+  position: fixed;
+  padding: 12px;
+  border-radius: 50%;
+  background-color: var(--alt-bg-color);
+  bottom: 32px;
+  right: 32px;
+  margin: 0;
 }
 
 .login:hover,
@@ -112,7 +139,8 @@ nav {
   right: 5vw;
   padding: 16px;
   border-radius: 15px;
-  background-color: #ddd;
+  outline: 1px solid var(--text-color);
+  background-color: var(--alt-bg-color);
   z-index: 100;
   font-size: x-large;
   transition: all 0.3s ease-in-out;
@@ -180,7 +208,7 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-  background-color: #ddd;
+  background-color: var(--alt-bg-color);
 }
 
 @media screen and (max-width: 1024px) {
@@ -287,12 +315,12 @@ footer > div:nth-last-of-type(1) {
 nav a i,
 nav a span {
   transition: all 0.3s ease-in-out;
-  color: rgba(0, 0, 0, 0.85);
+  color: var(--text-color);
 }
 
 nav a:hover i,
 nav a:hover span {
-  color: #000;
+  color: var(--text-color);
 }
 
 .main-content {
@@ -350,7 +378,7 @@ button {
   padding: 8px;
   border-radius: 8px;
   border: none;
-  outline: 1px solid black;
+  outline: 1px solid var(--text-color);
   background-color: transparent;
   font-size: large;
   margin-bottom: 1vh;
@@ -360,7 +388,7 @@ button {
 }
 
 button:hover {
-  background-color: #bbb;
+  background-color: var(--alt-bg-color);
 }
 
 .contact > form > button {
@@ -462,7 +490,8 @@ button:hover {
   right: 5vw;
   padding: 16px;
   border-radius: 15px;
-  background-color: #ddd;
+
+  background-color: var(--alt-bg-color);
   z-index: 100;
   cursor: pointer;
   font-size: x-large;
@@ -497,7 +526,7 @@ body.trade-page-open {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #ddd;
+  background-color: var(--alt-bg-color);
   padding: 16px;
   border-radius: 15px;
   z-index: 2001;
@@ -515,6 +544,13 @@ body.trade-page-open {
   max-height: 60vh;
 }
 
+@media screen and (max-width: 1024px) {
+  .trade-menu,
+  .notifications-menu {
+    width: 90vw;
+  }
+}
+
 .trade-menu form {
   display: flex;
   flex-direction: column;
@@ -525,6 +561,20 @@ body.trade-page-open {
 .cards-separator {
   display: flex;
   gap: 1vw;
+}
+
+@media screen and (max-width: 1024px) {
+  .cards-separator {
+    flex-direction: column;
+    width: 100%;
+    height: 62vh;
+    overflow: scroll;
+    gap: 3vh;
+  }
+
+  .cards-separator label {
+    font-size: x-large;
+  }
 }
 
 .trade-menu > form > div > div > div {
@@ -538,6 +588,12 @@ body.trade-page-open {
   overflow-x: hidden;
 }
 
+@media screen and (max-width: 1024px) {
+  .trade-menu > form > div > div > div {
+    width: 100%;
+  }
+}
+
 .card {
   cursor: pointer;
 }
@@ -545,6 +601,13 @@ body.trade-page-open {
 .trade-menu > form > button {
   max-width: 20vw;
 }
+
+@media screen and (max-width: 1024px) {
+  .trade-menu > form > button {
+    max-width: 80vw;
+  }
+}
+
 .trade-menu > form > select {
   padding: 8px;
   border-radius: 8px;
@@ -553,6 +616,12 @@ body.trade-page-open {
   font-size: large;
   max-width: 20vw;
   cursor: pointer;
+}
+
+@media screen and (max-width: 1024px) {
+  .trade-menu > form > select {
+    max-width: 80vw;
+  }
 }
 
 .trade-menu > form > div > div > div > div > i {
@@ -580,6 +649,12 @@ body.trade-page-open {
   flex-direction: column;
   gap: 1vh;
   width: 50%;
+}
+
+@media screen and (max-width: 1024px) {
+  .cards-lists-separator > div {
+    width: 100%;
+  }
 }
 
 .notifications {

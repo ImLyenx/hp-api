@@ -4,24 +4,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="global.css" />
-    <link rel="stylesheet" href="cards.css" />
+    <link rel="stylesheet" href="apidemo.css" />
     <script
       defer
       src="https://kit.fontawesome.com/aa06e5f929.js"
       crossorigin="anonymous"
     ></script>
-    <meta name="description" content="Rules of the game" />
+    <meta name="description" content="Harry Potter Trading Card Game" />
     <link
       rel="shortcut icon"
-      href="../assets/images/logo.png"
+      href="assets/images/logo.png"
       type="image/x-icon"
     />
-    <title>Cards</title>
+    <title>Harry Potter TCG</title>
   </head>
   <body>
     <header>
       <div class="logo">
-        <img src="../assets/images/logo.png" alt="" />
+        <img src="assets/images/logo.png" alt="" />
       </div>
       <nav>
         <ul class="navbar-list">
@@ -45,31 +45,6 @@
           </li>
         </ul>
       </nav>
-      <form class="search">
-        <input
-          id="searchInput"
-          type="text"
-          placeholder="Search..."
-          oninput="search()"
-        />
-      </form>
-      <script>
-        function search() {
-          const searchTerm = document
-            .getElementById("searchInput")
-            .value.toLowerCase();
-
-          const cards = document.querySelectorAll(".card-img");
-          cards.forEach((card) => {
-            const alt = card.getAttribute("alt").toLowerCase();
-            if (alt.includes(searchTerm)) {
-              card.parentElement.style.display = "flex";
-            } else {
-              card.parentElement.style.display = "none";
-            }
-          });
-        }
-      </script>
       <div class="login">
         <i class="fas fa-right-to-bracket"></i>
       </div>
@@ -214,7 +189,6 @@
           });
         });
       </script>
-
       <input type="checkbox" id="burger-toggle" />
       <label for="burger-toggle" class="burger-icon">
         <i class="fas fa-bars"></i>
@@ -253,156 +227,40 @@
         });
       </script>
     </header>
-    <div class="big-title">
-      <h1>Characters</h1>
-      <div class="tags-container">Filtres :</div>
-    </div>
-    <main class="cards-container" id="cards-container">
-      <!-- <div>
-        <img
-          class="card-img"
-          src="../../assets/images/cards/HarryPotter.png"
-          alt=""
-        />
-        <h4>Harry Potter</h4>
-      </div> -->
+    <main class="cards-container">
       <script>
-        const createCards = async () => {
-          try {
-            const tagList = [
-              "gryffindor",
-              "slytherin",
-              "ravenclaw",
-              "hufflepuff",
-            ];
-            const container = document.querySelector(".cards-container");
+        const res = fetch("https://hp-api.lainocs.fr/characters").then((res) =>
+          res.json()
+        );
+        res.then((data) => {
+          const cardsContainer = document.querySelector(".cards-container");
+          data.forEach((card) => {
+            birthDate = new Date(card.birthday);
+            const options = {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            };
+            card.birthday = birthDate.toLocaleDateString("fr-FR", options);
 
-            function formatCheckboxTitle(string) {
-              return " " + string.charAt(0).toUpperCase() + string.slice(1);
-            }
-
-            tagList.forEach((element) => {
-              const tagsContainer = document.querySelector(".tags-container");
-              const tag = document.createElement("label");
-              tag.classList.add("tag");
-              const checkbox = document.createElement("input");
-              checkbox.type = "checkbox";
-              checkbox.value = element;
-              checkbox.addEventListener("change", () => {
-                const cards = document.querySelectorAll(".card-img");
-                const checkedTags = Array.from(
-                  document.querySelectorAll(".tag input:checked")
-                ).map((checkbox) => checkbox.value);
-                cards.forEach((card) => {
-                  if (
-                    checkedTags.length === 0 ||
-                    checkedTags.some((tag) => card.classList.contains(tag))
-                  ) {
-                    card.parentElement.style.display = "flex";
-                  } else {
-                    card.parentElement.style.display = "none";
-                  }
-                });
-              });
-              tag.appendChild(checkbox);
-              tag.appendChild(
-                document.createTextNode(formatCheckboxTitle(element))
-              );
-              tagsContainer.appendChild(tag);
-            });
-
-            const imageResponse = await fetch("/api/cards");
-            const imageData = await imageResponse.json();
-            imageData.forEach((element) => {
-              container.appendChild(document.createElement("div"));
-              const div = container.lastChild;
-              div.id = element.id;
-              div.classList.add("card");
-              const house = element.house || "no-house";
-              div.addEventListener("click", () => {
-                if (localStorage.getItem("token")) {
-                  fetch(`"/api/me/latesthouse"`, {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                      Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                    body: JSON.stringify({ house: house }),
-                  })
-                    .then((response) => {
-                      if (response.status === 403) {
-                        localStorage.removeItem("token");
-                      }
-                    })
-                    .then(() => {
-                      window.location.href = `?id=${div.id}`;
-                    })
-                    .catch((error) => {
-                      console.error("There was an error!", error);
-                    });
-                } else {
-                  window.location.href = `?id=${div.id}`;
-                }
-              });
-              let img = document.createElement("img");
-              img.classList.add("card-img");
-              img.src = `/assets/images/cards/${element.image}`;
-              img.alt = element.name;
-              img.classList.add(element.house || "no-house");
-              div.appendChild(img);
-              const houseName = document.createElement("p");
-              houseName.innerText =
-                capitalizeFirstLetter(element.house) || "Pas de maison";
-              houseName.classList.add("house-name");
-              switch (element.house) {
-                case "gryffindor":
-                  houseName.style.color = "red";
-                  break;
-                case "slytherin":
-                  houseName.style.color = "green";
-                  break;
-                case "ravenclaw":
-                  houseName.style.color = "blue";
-                  break;
-                case "hufflepuff":
-                  houseName.style.color = "olive";
-                  break;
-                default:
-                  houseName.style.color = "var(--text-color)";
-              }
-              div.appendChild(houseName);
-              let title = document.createElement("h4");
-              title.innerText = element.name;
-              div.appendChild(title);
-            });
-            showOnlyOneCard();
-          } catch (error) {
-            console.error("Erreur lors du traitement des images :", error);
-          }
-        };
-
-        createCards();
-
-        function showOnlyOneCard() {
-          const urlParams = new URLSearchParams(window.location.search);
-          const id = urlParams.get("id");
-
-          if (id) {
-            const cards = document.querySelectorAll(".card");
-            cards.forEach((card) => {
-              if (card.id !== id) {
-                card.classList.add("card-hidden");
-              }
-            });
-            document
-              .getElementById("cards-container")
-              .classList.add("cards-container-onlyone");
-          }
-        }
-
-        function capitalizeFirstLetter(string) {
-          return string.charAt(0).toUpperCase() + string.slice(1);
-        }
+            const cardElement = document.createElement("div");
+            cardElement.classList.add("card");
+            cardElement.innerHTML = `
+            <img src="${card.image}" alt="${card.name}" />
+            <h2>${card.name}</h2>
+            <p>Maison : ${card.house}</p>
+            <p>Acteur : ${card.actor}</p>
+            <p>Yeux : ${card.eyes}</p> 
+            <p>Anniversaire : ${card.birthday}</p>
+            <p>Sang : ${card.blood}</p>
+            <p>Baguette : ${card.wand}</p>
+            <p>Patronus : ${card.patronus}</p>
+            <p>Rôle : ${card.role}</p>
+            `;
+            cardsContainer.appendChild(cardElement);
+          });
+        });
       </script>
     </main>
     <footer>
