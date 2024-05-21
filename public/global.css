@@ -240,7 +240,8 @@ button[type="submit"]:hover {
 
 @media screen and (max-width: 800px) {
   .hero-image > img {
-    height: 65vh;
+    height: 40vh;
+    width: 20000vw;
     margin-left: 50%;
     transform: translateX(-50%);
   }
@@ -265,7 +266,8 @@ button[type="submit"]:hover {
 @media screen and (max-width: 1024px) {
   .hero-title,
   .hero-title2 {
-    top: 35%;
+    top: 27.5%;
+    font-size: 20vw;
   }
 }
 
@@ -721,4 +723,20 @@ body.trade-page-open {
 
 .cards-lists-separator div {
   margin-left: 4px;
+}
+
+@media screen and (max-width: 1024px) {
+  .legal {
+    flex-direction: column;
+    align-items: center;
+    line-height: 30%;
+  }
+
+  .burger-icon {
+    margin-right: 24px;
+  }
+
+  footer {
+    gap: 48px;
+  }
 }
